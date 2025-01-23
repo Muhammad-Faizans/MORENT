@@ -1,6 +1,6 @@
 import Image from "next/image"
 import { StarRating } from "../car-detail/star-rating"
-import { Button } from "@/components/ui/button"
+// import { Button } from "@/components/ui/button"
 import CarImg from "../../assets/Bitcoin.png" 
 
 interface RentalSummaryProps {
