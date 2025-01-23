@@ -4,17 +4,19 @@ import { CarCard } from "./car-card"
 import { Loader } from "@/components/ui/loader"
 import { client } from '../../sanity/lib/client'
 import { urlForImage } from '../../sanity/lib/image'
+import { SanityImageSource } from '@sanity/image-url/lib/types/types'
 
 export function RecommendationCars() {
   interface Car {
     _id: string;
-    image: any;
+    image: SanityImageSource;
     name: string;
     type: string;
     fuelCapacity: string;
     transmission: string;
     seatingCapacity: string;
     pricePerDay: number;
+    tags?: string[];
   }
 
   const [cars, setCars] = useState<Car[]>([])
@@ -24,7 +26,7 @@ export function RecommendationCars() {
   useEffect(() => {
     const fetchCars = async () => {
       try {
-        const result = await client.fetch('*[_type == "car" && "recommended" in tags]')
+        const result = await client.fetch<Car[]>('*[_type == "car" && "recommended" in tags]')
         setCars(result)
         setIsLoading(false)
       } catch (err) {
@@ -36,7 +38,6 @@ export function RecommendationCars() {
         setIsLoading(false)
       }
     }
-
     fetchCars()
   }, [])
 
@@ -52,7 +53,7 @@ export function RecommendationCars() {
         {cars.map((car) => (
           <CarCard 
             key={car._id} 
-            _id={car._id}
+            id={car._id}
             image={urlForImage(car.image).url()}
             name={car.name}
             type={car.type}
@@ -66,4 +67,3 @@ export function RecommendationCars() {
     </section>
   )
 }
-
