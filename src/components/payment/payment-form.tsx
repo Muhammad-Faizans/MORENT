@@ -19,14 +19,23 @@ interface PaymentFormProps {
   car: {
     _id: string;
     name: string;
-    image: ImageType; // Use the specific type here
+    image: ImageType;
     pricePerDay: number;
   };
   userId: string;
 }
 
+interface FormData {
+  name: string;
+  phone: string;
+  address: string;
+  city: string;
+  startDate: string;
+  endDate: string;
+}
+
 export function PaymentForm({ car, userId }: PaymentFormProps) {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     name: "",
     phone: "",
     address: "",
@@ -85,7 +94,7 @@ export function PaymentForm({ car, userId }: PaymentFormProps) {
     }
   };
 
-  const calculateDays = (start: string, end: string) => {
+  const calculateDays = (start: string, end: string): number => {
     const startDate = new Date(start);
     const endDate = new Date(end);
     const diffTime = Math.abs(endDate.getTime() - startDate.getTime());
@@ -133,8 +142,8 @@ export function PaymentForm({ car, userId }: PaymentFormProps) {
       </div>
 
       <RentalInfo
-        onStartDateChange={(date) => setFormData({ ...formData, startDate: date })}
-        onEndDateChange={(date) => setFormData({ ...formData, endDate: date })}
+        onStartDateChange={(date: string) => setFormData({ ...formData, startDate: date })}
+        onEndDateChange={(date: string) => setFormData({ ...formData, endDate: date })}
       />
 
       <PaymentMethod />
