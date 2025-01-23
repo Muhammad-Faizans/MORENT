@@ -49,7 +49,7 @@ export default function CategoryPage() {
     };
 
     fetchCars();
-  }, [currentPage, filters]); // Removed fetchCars from dependencies
+  }, [currentPage, filters]); // Dependencies are clean and now only react to state changes
 
   const handleFilterChange = (newFilters: Filters) => {
     setFilters(newFilters);
