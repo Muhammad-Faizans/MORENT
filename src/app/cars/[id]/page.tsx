@@ -23,7 +23,14 @@ async function getRecommendedCars() {
   return client.fetch(`*[_type == "car" && "recommended" in tags][0...3]`);
 }
 
-export default async function CarDetailPage({ params }: { params: { id: string } }) {
+// Define the type for the params prop
+interface CarDetailPageProps {
+  params: {
+    id: string;
+  };
+}
+
+export default async function CarDetailPage({ params }: CarDetailPageProps) {
   const session = await getServerSession();
   const { id } = params; // Destructure id from params
   const car = await getCar(id);
