@@ -1,6 +1,4 @@
-
 'use client'
-import { Suspense } from 'react'
 import { Navbar } from "@/components/landingpage/navbar"
 import { Footer } from "@/components/landingpage/footer"
 import { FilterSidebar } from "@/components/category/sidebar"
@@ -11,19 +9,31 @@ import { Loader } from "@/components/ui/loader"
 import { client } from '../../sanity/lib/client'
 import { urlForImage } from '../../sanity/lib/image'
 import { useState, useEffect } from 'react'
+import { SanityImageSource } from '@sanity/image-url/lib/types/types'
+
+interface Car {
+  _id: string;
+  image: SanityImageSource;
+  name: string;
+  type: string;
+  pricePerDay: number;
+  seatingCapacity: number;
+}
+
+interface Filters {
+  priceRange?: [number, number];
+  capacity?: string[];
+  type?: string[];
+}
 
 const ITEMS_PER_PAGE = 9
 
 export default function CategoryPage() {
-  const [cars, setCars] = useState([])
+  const [cars, setCars] = useState<Car[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
-  const [filters, setFilters] = useState({})
-
-  useEffect(() => {
-    fetchCars()
-  }, [currentPage, filters])
+  const [filters, setFilters] = useState<Filters>({})
 
   const fetchCars = async () => {
     setIsLoading(true)
@@ -37,12 +47,16 @@ export default function CategoryPage() {
     setIsLoading(false)
   }
 
-  const handleFilterChange = (newFilters) => {
+  useEffect(() => {
+    fetchCars()
+  }, [currentPage, filters, fetchCars])
+
+  const handleFilterChange = (newFilters: Filters) => {
     setFilters(newFilters)
     setCurrentPage(1)
   }
 
-  const handlePageChange = (page) => {
+  const handlePageChange = (page: number) => {
     setCurrentPage(page)
   }
 
@@ -54,7 +68,6 @@ export default function CategoryPage() {
         <div className="mb-8">
           <PickupSection />
         </div>
-
         <div className="flex gap-8">
           <FilterSidebar onFilterChange={handleFilterChange} />
           
@@ -65,7 +78,6 @@ export default function CategoryPage() {
                 <span className="text-sm text-muted-foreground">({cars.length} Cars)</span>
               </div>
             </div>
-
             {isLoading ? (
               <Loader />
             ) : (
@@ -79,7 +91,6 @@ export default function CategoryPage() {
                 ))}
               </div>
             )}
-
             <div className="mt-8 flex justify-center">
               <Pagination
                 currentPage={currentPage}
@@ -96,31 +107,23 @@ export default function CategoryPage() {
   )
 }
 
-async function getCars(filters = {}, page = 1, itemsPerPage = ITEMS_PER_PAGE) {
+async function getCars(filters: Filters = {}, page = 1, itemsPerPage = ITEMS_PER_PAGE) {
   let query = '*[_type == "car"'
-
   if (filters.priceRange) {
     query += ` && pricePerDay >= ${filters.priceRange[0]} && pricePerDay <= ${filters.priceRange[1]}`
   }
-
   if (filters.capacity && filters.capacity.length > 0) {
     query += ` && seatingCapacity in [${filters.capacity.map(c => `"${c}"`).join(',')}]`
   }
-
   if (filters.type && filters.type.length > 0) {
     query += ` && type in [${filters.type.map(t => `"${t}"`).join(',')}]`
   }
-
   query += ']'
-
   const totalQuery = `count(${query})`
   const paginatedQuery = `${query} | order(_createdAt desc) [${(page - 1) * itemsPerPage}...${page * itemsPerPage}]`
-
   const [total, cars] = await Promise.all([
     client.fetch(totalQuery),
     client.fetch(paginatedQuery)
   ])
-
   return { total, cars }
 }
-
