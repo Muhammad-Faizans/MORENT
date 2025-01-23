@@ -31,6 +31,14 @@ export default async function CarDetailPage({ params }: { params: { id: string }
   const car = await getCar(id);
   const recommendedCars = await getRecommendedCars();
 
+  if (!car) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p>Car not found.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#F6F7F9]">
       <Navbar />
