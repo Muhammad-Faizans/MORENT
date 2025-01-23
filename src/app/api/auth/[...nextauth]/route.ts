@@ -1,6 +1,6 @@
 import NextAuth from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
-import { SanityAdapter, SanityCredentials } from "next-auth-sanity"
+import { SanityAdapter } from "next-auth-sanity"
 import { client } from "@/sanity/lib/client"
 
 const handler = NextAuth({
@@ -29,7 +29,6 @@ const handler = NextAuth({
             `*[_type == "customer" && email == $email][0]`,
             { email }
           );
-
           if (!existingUser) {
             await client.create({
               _type: 'customer',
@@ -41,7 +40,6 @@ const handler = NextAuth({
           }
         } catch (error) {
           console.error("Error creating/fetching customer in Sanity:", error);
-          // Don't prevent sign in if there's an error, but log it
         }
       }
       return true;
@@ -49,11 +47,8 @@ const handler = NextAuth({
   },
   pages: {
     signIn: '/auth/signin',
-    error: '/auth/error', // Add this line to handle auth errors
+    error: '/auth/error',
   },
 })
 
 export { handler as GET, handler as POST }
-
-
-
