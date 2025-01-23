@@ -1,5 +1,6 @@
 import Image from "next/image"
 import { urlForImage } from "@/sanity/lib/image"
+import { SanityImageSource } from '@sanity/image-url/lib/types/types'
 
 interface Booking {
   _id: string
@@ -9,7 +10,7 @@ interface Booking {
   status: string
   car: {
     name: string
-    image: any
+    image: SanityImageSource
   }
 }
 
@@ -51,4 +52,3 @@ export function BookingHistory({ bookings }: BookingHistoryProps) {
     </div>
   )
 }
-
