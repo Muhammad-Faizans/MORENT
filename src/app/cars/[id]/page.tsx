@@ -1,3 +1,21 @@
+import { Navbar } from "@/components/landingpage/navbar"
+import { Footer } from "@/components/landingpage/footer"
+// import { FilterSidebar } from "@/components/category/sidebar"
+import { ImageGallery } from "@/components/car-detail/image-gallery"
+import { StarRating } from "@/components/car-detail/star-rating"
+import { ReviewCard } from "@/components/car-detail/review-card"
+import { CarCard } from "@/components/landingpage/car-card"
+import { Heart } from 'lucide-react'
+// import { Button } from "@/components/ui/button"
+import Link from "next/link"
+import { client } from '../../../sanity/lib/client'
+import { urlForImage } from '../../../sanity/lib/image'
+import { Loader } from "@/components/ui/loader"
+import { Suspense } from "react"
+import { getServerSession } from "next-auth/next"
+import { RentNowButton } from "@/components/payment/rent-now-button"
+
+
 export default async function CarDetailPage({ params }: { params: { id: string } }) {
   const session = await getServerSession(); // Ensures user session is fetched
   const { id } = params; // Destructure id directly from params
