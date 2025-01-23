@@ -1,23 +1,23 @@
 'use client';
-import { useState, useRef } from 'react';
-import { useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Link from "next/link";
 import { CarCard } from "./car-card";
 import { Loader } from "@/components/ui/loader";
 import { client } from '../../sanity/lib/client';
 import { urlForImage } from '../../sanity/lib/image';
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { SanityImageSource } from '@sanity/image-url/lib/types/types';
 
 interface Car {
   _id: string;
-  image: any;
+  image: SanityImageSource;
   name: string;
   type: string;
   fuelCapacity: number;
   transmission: string;
   seatingCapacity: number;
   pricePerDay: number;
-  // Add other properties of the car object here
+  tags?: string[];
 }
 
 export function PopularCars() {
@@ -31,7 +31,7 @@ export function PopularCars() {
   useEffect(() => {
     const fetchCars = async () => {
       try {
-        const result = await client.fetch('*[_type == "car" && "popular" in tags]');
+        const result = await client.fetch<Car[]>('*[_type == "car" && "popular" in tags]');
         setCars(result);
         setIsLoading(false);
       } catch (err) {
@@ -46,13 +46,10 @@ export function PopularCars() {
     
     fetchCars();
   }, []);
-  
-  function useEffect(arg0: () => void, arg1: never[]) {
-    // throw new Error('Function not implemented.');
-  }
+
   const scrollByPercentage = (direction: 'left' | 'right') => {
     if (scrollContainerRef.current) {
-      const scrollWidth = scrollContainerRef.current.clientWidth * 0.8; // Scroll by 80% of the container width
+      const scrollWidth = scrollContainerRef.current.clientWidth * 0.8;
       scrollContainerRef.current.scrollBy({
         left: direction === 'right' ? scrollWidth : -scrollWidth,
         behavior: 'smooth',
@@ -125,4 +122,3 @@ export function PopularCars() {
     </section>
   );
 }
-
