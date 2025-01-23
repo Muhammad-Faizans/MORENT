@@ -1,24 +1,31 @@
-import { Navbar } from "@/components/landingpage/navbar"
-import { Footer } from "@/components/landingpage/footer"
-// import { FilterSidebar } from "@/components/category/sidebar"
-import { ImageGallery } from "@/components/car-detail/image-gallery"
-import { StarRating } from "@/components/car-detail/star-rating"
-import { ReviewCard } from "@/components/car-detail/review-card"
-import { CarCard } from "@/components/landingpage/car-card"
-import { Heart } from 'lucide-react'
-// import { Button } from "@/components/ui/button"
-import Link from "next/link"
-import { client } from '../../../sanity/lib/client'
-import { urlForImage } from '../../../sanity/lib/image'
-import { Loader } from "@/components/ui/loader"
-import { Suspense } from "react"
-import { getServerSession } from "next-auth/next"
-import { RentNowButton } from "@/components/payment/rent-now-button"
+import { Navbar } from "@/components/landingpage/navbar";
+import { Footer } from "@/components/landingpage/footer";
+import { ImageGallery } from "@/components/car-detail/image-gallery";
+import { StarRating } from "@/components/car-detail/star-rating";
+import { ReviewCard } from "@/components/car-detail/review-card";
+import { CarCard } from "@/components/landingpage/car-card";
+import { Heart } from "lucide-react";
+import Link from "next/link";
+import { client } from "../../../sanity/lib/client";
+import { urlForImage } from "../../../sanity/lib/image";
+import { Loader } from "@/components/ui/loader";
+import { Suspense } from "react";
+import { getServerSession } from "next-auth/next";
+import { RentNowButton } from "@/components/payment/rent-now-button";
 
+// Function to fetch a single car by ID
+async function getCar(id: string) {
+  return client.fetch(`*[_type == "car" && _id == $id][0]`, { id });
+}
+
+// Function to fetch recommended cars
+async function getRecommendedCars() {
+  return client.fetch(`*[_type == "car" && "recommended" in tags][0...3]`);
+}
 
 export default async function CarDetailPage({ params }: { params: { id: string } }) {
-  const session = await getServerSession(); // Ensures user session is fetched
-  const { id } = params; // Destructure id directly from params
+  const session = await getServerSession();
+  const { id } = params; // Destructure id from params
   const car = await getCar(id);
   const recommendedCars = await getRecommendedCars();
 
@@ -28,6 +35,7 @@ export default async function CarDetailPage({ params }: { params: { id: string }
       <main className="container mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="flex-1 space-y-8">
+            {/* Car Details Section */}
             <Suspense fallback={<Loader />}>
               <div className="flex flex-col lg:flex-row gap-8">
                 <div className="w-full lg:w-1/2">
@@ -45,9 +53,7 @@ export default async function CarDetailPage({ params }: { params: { id: string }
                         </div>
                         <div className="flex items-center gap-2">
                           <StarRating rating={4} size="md" />
-                          <span className="text-[#596780] text-sm md:text-[14px]">
-                            440+ Reviewer
-                          </span>
+                          <span className="text-[#596780] text-sm md:text-[14px]">440+ Reviewer</span>
                         </div>
                       </div>
                     </div>
@@ -77,9 +83,7 @@ export default async function CarDetailPage({ params }: { params: { id: string }
 
                     <div className="flex items-center justify-between">
                       <div>
-                        <span className="text-xl md:text-[28px] font-bold">
-                          ${car.pricePerDay}
-                        </span>
+                        <span className="text-xl md:text-[28px] font-bold">${car.pricePerDay}</span>
                         <span className="text-sm md:text-[16px] text-[#90A3BF]">/day</span>
                         {car.originalPrice && (
                           <p className="text-sm md:text-[16px] text-[#90A3BF] line-through">
@@ -94,20 +98,20 @@ export default async function CarDetailPage({ params }: { params: { id: string }
               </div>
             </Suspense>
 
+            {/* Reviews Section */}
             <Suspense fallback={<Loader />}>
               <div className="bg-white rounded-[10px] p-6">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-lg md:text-[20px] font-semibold">Reviews</h2>
                   <span className="bg-[#3563E9] text-white text-xs md:text-[14px] px-2.5 py-1.5 rounded-[4px]">
-                    13
+                    {car.reviews?.length || 0}
                   </span>
                 </div>
 
                 <div className="divide-y divide-[#C3D4E966]">
-                  {car.reviews &&
-                    car.reviews.map((review, index) => (
-                      <ReviewCard key={index} {...review} />
-                    ))}
+                  {car.reviews?.map((review, index) => (
+                    <ReviewCard key={index} {...review} />
+                  ))}
                 </div>
 
                 <button className="w-full text-center text-[#90A3BF] mt-6 text-sm md:text-base">
@@ -116,12 +120,11 @@ export default async function CarDetailPage({ params }: { params: { id: string }
               </div>
             </Suspense>
 
+            {/* Recommended Cars Section */}
             <Suspense fallback={<Loader />}>
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-base md:text-[16px] font-semibold">
-                    Recommendation Car
-                  </h2>
+                  <h2 className="text-base md:text-[16px] font-semibold">Recommendation Car</h2>
                   <Link href="/category">
                     <button className="text-[#3563E9] text-xs md:text-[14px] font-semibold">
                       View All
@@ -130,11 +133,7 @@ export default async function CarDetailPage({ params }: { params: { id: string }
                 </div>
                 <div className="grid gap-4 md:gap-8 sm:grid-cols-2 lg:grid-cols-3">
                   {recommendedCars.map((car) => (
-                    <CarCard
-                      key={car._id}
-                      {...car}
-                      image={urlForImage(car.image).url()}
-                    />
+                    <CarCard key={car._id} {...car} image={urlForImage(car.image).url()} />
                   ))}
                 </div>
               </div>
