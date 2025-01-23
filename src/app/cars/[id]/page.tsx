@@ -1,4 +1,3 @@
-import { GetServerSideProps } from "next"; // Import Next.js types
 import { Navbar } from "@/components/landingpage/navbar";
 import { Footer } from "@/components/landingpage/footer";
 import { ImageGallery } from "@/components/car-detail/image-gallery";
@@ -11,8 +10,8 @@ import { client } from "../../../sanity/lib/client";
 import { urlForImage } from "../../../sanity/lib/image";
 import { Loader } from "@/components/ui/loader";
 import { Suspense } from "react";
-import { getServerSession } from "next-auth/next";
 import { RentNowButton } from "@/components/payment/rent-now-button";
+import { getServerSession } from "next-auth/next";
 
 // Fetch a single car by ID
 async function getCar(id: string) {
@@ -24,17 +23,10 @@ async function getRecommendedCars() {
   return client.fetch(`*[_type == "car" && "recommended" in tags][0...3]`);
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { id } = context.params as { id: string }; // Extract ID from context params
+// Page Component
+export default async function CarDetailPage({ params }: { params: { id: string } }) {
+  const { id } = params;
 
-  return {
-    props: {
-      id,
-    },
-  };
-};
-
-export default async function CarDetailPage({ id }: { id: string }) {
   const session = await getServerSession();
   const car = await getCar(id);
   const recommendedCars = await getRecommendedCars();
