@@ -117,7 +117,7 @@ export function PaymentForm({ car, userId }: PaymentFormProps) {
             label="Address"
             placeholder="Address"
             name="address"
-            className="md:col-span-2 "
+            className="md:col-span-2"
             value={formData.address}
             onChange={handleChange}
           />
