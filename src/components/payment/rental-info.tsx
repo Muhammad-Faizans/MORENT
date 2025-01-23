@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { PickupDropdown } from "../landingpage/pickupdropdown";
 
 interface RentalInfoProps {
@@ -12,19 +11,6 @@ export function RentalInfo({
   onStartDateChange,
   onEndDateChange,
 }: RentalInfoProps) {
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-
-  const handleStartDateChange = (date: string) => {
-    setStartDate(date);
-    onStartDateChange(date);
-  };
-
-  const handleEndDateChange = (date: string) => {
-    setEndDate(date);
-    onEndDateChange(date);
-  };
-
   return (
     <div className="container mx-auto px-4 md:px-0">
       <div className="bg-white rounded-[10px] p-6">
@@ -36,7 +22,7 @@ export function RentalInfo({
             options={["Today", "Tomorrow", "In 2 days"]}
             onChange={(date) => {
               console.log("Selected pick-up date:", date); // Debugging
-              handleStartDateChange(date);
+              onStartDateChange(date); // Directly calling the callback
             }}
           />
           <PickupDropdown
@@ -45,7 +31,7 @@ export function RentalInfo({
             options={["Tomorrow", "In 2 days", "In 3 days"]}
             onChange={(date) => {
               console.log("Selected drop-off date:", date); // Debugging
-              handleEndDateChange(date);
+              onEndDateChange(date); // Directly calling the callback
             }}
           />
         </div>
