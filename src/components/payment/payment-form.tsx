@@ -10,11 +10,16 @@ import { RentalSummary } from "@/components/payment/rental-summary";
 import { toast } from "@/hooks/use-toast";
 import { urlForImage } from "@/sanity/lib/image";
 
+interface ImageType {
+  url: string;
+  alt?: string; // Optional property
+}
+
 interface PaymentFormProps {
   car: {
     _id: string;
     name: string;
-    image: any; // Replace `any` with a specific type for your image object if possible
+    image: ImageType; // Use the specific type here
     pricePerDay: number;
   };
   userId: string;
@@ -50,7 +55,7 @@ export function PaymentForm({ car, userId }: PaymentFormProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           carId: car._id,
-          userId: userId, // Include `userId` in the booking request
+          userId: userId,
           startDate: formData.startDate,
           endDate: formData.endDate,
           totalAmount: car.pricePerDay * calculateDays(formData.startDate, formData.endDate),
@@ -112,7 +117,7 @@ export function PaymentForm({ car, userId }: PaymentFormProps) {
             label="Address"
             placeholder="Address"
             name="address"
-            className="md:col-span-2"
+            className="md:col-span-2 "
             value={formData.address}
             onChange={handleChange}
           />
