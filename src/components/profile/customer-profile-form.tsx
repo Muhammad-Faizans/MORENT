@@ -34,7 +34,6 @@ export function CustomerProfileForm({ initialData }: { initialData: CustomerData
   const [formData, setFormData] = useState(initialData)
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
-  const { data: session } = useSession()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -150,4 +149,3 @@ export function CustomerProfileForm({ initialData }: { initialData: CustomerData
     </form>
   )
 }
-
