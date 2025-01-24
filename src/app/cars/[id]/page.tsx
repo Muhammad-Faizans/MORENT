@@ -11,7 +11,6 @@ import { urlForImage } from "../../../sanity/lib/image";
 import { Loader } from "@/components/ui/loader";
 import { Suspense } from "react";
 import { RentNowButton } from "@/components/payment/rent-now-button";
-import { getServerSession } from "next-auth/next";
 
 // Fetch a single car by ID
 async function getCar(id: string) {
@@ -23,16 +22,10 @@ async function getRecommendedCars() {
   return client.fetch(`*[_type == "car" && "recommended" in tags][0...3]`);
 }
 
-// Dynamic Page Component
-export default async function CarDetailPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+export default async function CarDetailPage({ params }: { params: { id: string } }) {
   const { id } = params;
 
   // Fetch data
-  const session = await getServerSession();
   const car = await getCar(id);
   const recommendedCars = await getRecommendedCars();
 
@@ -132,7 +125,7 @@ export default async function CarDetailPage({
                           </p>
                         )}
                       </div>
-                      <RentNowButton carId={car._id} isAuthenticated={!!session} />
+                      <RentNowButton carId={car._id} isAuthenticated={true} />
                     </div>
                   </div>
                 </div>
