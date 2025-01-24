@@ -23,8 +23,13 @@ async function getRecommendedCars() {
   return client.fetch(`*[_type == "car" && "recommended" in tags][0...3]`);
 }
 
+// Define the expected structure of params
+interface CarDetailPageParams {
+  id: string;
+}
+
 // Page Component
-export default async function CarDetailPage({ params }: { params: { id: string } }) {
+export default async function CarDetailPage({ params }: { params: CarDetailPageParams }) {
   const { id } = params;
 
   const session = await getServerSession();
