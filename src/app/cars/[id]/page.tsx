@@ -26,7 +26,7 @@ async function getRecommendedCars() {
 export default async function CarDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: { id: Promise };
 }) {
   const { id } = params;
 
