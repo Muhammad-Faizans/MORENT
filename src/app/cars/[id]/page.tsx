@@ -26,9 +26,10 @@ async function getRecommendedCars() {
 export default async function CarDetailPage({
   params,
 }: {
-  params: { id: Promise };
+  params: { id: Promise<string> }; // Expect a promise that resolves to a string
 }) {
-  const { id } = params;
+  // Resolve the promise to get the car ID
+  const id = await params.id;
 
   // Fetch car data and recommended cars
   const car = await getCar(id);
