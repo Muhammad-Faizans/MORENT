@@ -23,7 +23,7 @@ async function getRecommendedCars() {
   return client.fetch(`*[_type == "car" && "recommended" in tags][0...3]`);
 }
 
-// Page Component
+// Dynamic Page Component
 export default async function CarDetailPage({
   params,
 }: {
@@ -31,6 +31,7 @@ export default async function CarDetailPage({
 }) {
   const { id } = params;
 
+  // Fetch data
   const session = await getServerSession();
   const car = await getCar(id);
   const recommendedCars = await getRecommendedCars();
