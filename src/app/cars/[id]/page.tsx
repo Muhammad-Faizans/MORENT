@@ -22,13 +22,19 @@ async function getRecommendedCars() {
   return client.fetch(`*[_type == "car" && "recommended" in tags][0...3]`);
 }
 
-export default async function CarDetailPage({ params }: { params: { id: string } }) {
+// Dynamic route page component
+export default async function CarDetailPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   const { id } = params;
 
-  // Fetch data
+  // Fetch car data and recommended cars
   const car = await getCar(id);
   const recommendedCars = await getRecommendedCars();
 
+  // Handle case where car is not found
   if (!car) {
     return (
       <div className="min-h-screen flex items-center justify-center">
