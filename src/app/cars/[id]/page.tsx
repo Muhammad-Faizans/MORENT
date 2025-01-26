@@ -26,13 +26,10 @@ async function getRecommendedCars() {
 export default async function CarDetailPage({
   params,
 }: {
-  params: { id: Promise<string> }; // Expect a promise that resolves to a string
+  params: { id: string }; // Expect a string
 }) {
-  // Resolve the promise to get the car ID
-  const id = await params.id;
-
   // Fetch car data and recommended cars
-  const car = await getCar(id);
+  const car = await getCar(params.id);
   const recommendedCars = await getRecommendedCars();
 
   // Handle case where car is not found
@@ -150,9 +147,9 @@ export default async function CarDetailPage({
                 </div>
 
                 <div className="divide-y divide-[#C3D4E966]">
-                  {car.reviews?.map((review, index) => (
+                    {car.reviews?.map((review: Review, index: number) => (
                     <ReviewCard key={index} {...review} />
-                  ))}
+                    ))}
                 </div>
 
                 <button className="w-full text-center text-[#90A3BF] mt-6 text-sm md:text-base">
